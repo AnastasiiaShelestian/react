@@ -1,0 +1,35 @@
+.div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  text-decoration: none;
+  width: 300px;
+  margin-top: 20px;
+  margin-bottom: 200px;
+  border: 1px solid #ccc;
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.h2 {
+  margin: 5px;
+  font-size: 1 rem;
+  font-family: fantasy;
+  text-align: left;
+}
+
+.p1 {
+  text-align: left;
+}
+
+.p2 {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: left;
+}
+
+.a {
+  color: blue;
+  text-decoration: none;
+}
