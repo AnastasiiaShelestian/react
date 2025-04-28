@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Маргарита",
+    "description": "Соус, сыр, помидоры",
+    "price": 200,
+    "image": "pizza1.jpg",
+    "category": "Сырная",
+    "sizes": [30, 40, 50]
+  },
+  {
+    "id": 2,
+    "name": "Пепперони",
+    "description": "Соус, сыр, пепперони",
+    "price": 250,
+    "image": "pizza2.jpg",
+    "category": "Мясная",
+    "sizes": [30, 40, 50]
+  },
+  {
+    "id": 3,
+    "name": "Ранчо",
+    "description": "Соус, сыр, пепперони",
+    "price": 300,
+    "image": "pizza3.jpg",
+    "category": "Мясная",
+    "sizes": [30, 40, 50]
+  },
+  {
+    "id": 4,
+    "name": "Острая",
+    "description": "Соус, сыр, пепперони",
+    "price": 350,
+    "image": "pizza4.jpg",
+    "category": "Мясная",
+    "sizes": [30, 40, 50]
+  }
+]
