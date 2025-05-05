@@ -1,30 +1,34 @@
 import { Box } from "@mui/material";
 import MovieCard from "./MovieCard";
+import { useEffect, useState } from "react";
 
 function MoviesList() {
+  const [data, setData] = useState();
+
+  useEffect(() => {
+    fetch("https://6815fe8232debfe95dbd0fd4.mockapi.io/api/v1/movie", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to add movie");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <Box display="flex" justifyContent="center" flexWrap="wrap" gap={3}>
-      <MovieCard
-        id="1"
-        name="Interstellar"
-        description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival."
-        imageUrl="https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-        rating={9.4}
-      />
-      <MovieCard
-        id="1"
-        name="Interstellar"
-        description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival."
-        imageUrl="https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-        rating={9.4}
-      />
-      <MovieCard
-        id="1"
-        name="Interstellar"
-        description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival."
-        imageUrl="https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-        rating={9.4}
-      />
+      {data && data.map((movie) => <MovieCard key={movie.id} {...movie} />)}
     </Box>
   );
 }

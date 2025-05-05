@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 
-const MovieCard = ({ id, name, description, rating, imageUrl }) => {
+const MovieCard = ({ id, title, description, rating, posterUrl }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -31,8 +31,8 @@ const MovieCard = ({ id, name, description, rating, imageUrl }) => {
       <CardMedia
         component="img"
         height="300"
-        image={imageUrl}
-        alt={name}
+        image={posterUrl}
+        alt={title}
         sx={{
           objectFit: "cover",
           objectPosition: "top center",
@@ -40,7 +40,7 @@ const MovieCard = ({ id, name, description, rating, imageUrl }) => {
       />
       <CardContent>
         <Typography variant="h6" sx={{ color: "#fdd835", fontWeight: "bold" }}>
-          {name}
+          {title}
         </Typography>
         <Box display="flex" alignItems="center" mt={1} mb={1}>
           <Rating
