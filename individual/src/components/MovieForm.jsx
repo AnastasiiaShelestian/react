@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router";
+import { genreList } from "../constants/genres";
 
 function MovieForm() {
   const { id } = useParams();
@@ -12,6 +20,7 @@ function MovieForm() {
     producer: "",
     posterUrl: "",
     cast: [],
+    genres: [],
   });
 
   const [castInput, setCastInput] = useState(""); // for displaying comma-separated cast
@@ -42,6 +51,21 @@ function MovieForm() {
       .map((name) => name.trim())
       .filter((name) => name.length > 0);
     setMovie((prev) => ({ ...prev, cast: castArray }));
+  };
+
+  const handleGenreChange = (e) => {
+    const genre = e.target.name;
+    if (e.target.checked) {
+      setMovie((prev) => ({
+        ...prev,
+        genres: [...prev.genres, genre],
+      }));
+    } else {
+      setMovie((prev) => ({
+        ...prev,
+        genres: prev.genres.filter((g) => g !== genre),
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -148,6 +172,24 @@ function MovieForm() {
           onChange={handleCastChange}
           placeholder="e.g., Tom Hanks, Meryl Streep"
         />
+        <Typography variant="subtitle1" sx={{ mt: 2 }}>
+          Genres
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+          {genreList.map((genre) => (
+            <FormControlLabel
+              key={genre}
+              control={
+                <Checkbox
+                  name={genre}
+                  checked={movie.genres.includes(genre)}
+                  onChange={handleGenreChange}
+                />
+              }
+              label={genre}
+            />
+          ))}
+        </Box>
         <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
           Submit
         </Button>

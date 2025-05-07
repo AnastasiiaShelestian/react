@@ -81,6 +81,31 @@ const Movie = () => {
         <Typography sx={{ fontWeight: "bold" }}>Producer:</Typography>
         <Typography sx={{ mb: 1 }}>{data.producer}</Typography>
 
+        {data.genres?.length > 0 && (
+          <>
+            <Typography sx={{ fontWeight: "bold" }} mb={1}>
+              Genres:
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1 }}>
+              {data.genres.map((genre, index) => (
+                <Typography
+                  key={index}
+                  variant="body2"
+                  sx={{
+                    border: "1px solid #fdd835",
+                    color: "#fdd835",
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 1,
+                  }}
+                >
+                  {genre}
+                </Typography>
+              ))}
+            </Box>
+          </>
+        )}
+
         {data.cast?.length > 0 && (
           <>
             <Typography sx={{ fontWeight: "bold" }}>Cast:</Typography>
