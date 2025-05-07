@@ -25,6 +25,7 @@ function MovieForm() {
 
   const [castInput, setCastInput] = useState(""); // for displaying comma-separated cast
   const navigate = useNavigate();
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     if (id) {
@@ -41,6 +42,7 @@ function MovieForm() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMovie((prev) => ({ ...prev, [name]: value }));
+    setValidationErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleCastChange = (e) => {
@@ -51,6 +53,7 @@ function MovieForm() {
       .map((name) => name.trim())
       .filter((name) => name.length > 0);
     setMovie((prev) => ({ ...prev, cast: castArray }));
+    setValidationErrors((prev) => ({ ...prev, cast: "" }));
   };
 
   const handleGenreChange = (e) => {
@@ -70,6 +73,52 @@ function MovieForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const errors = {};
+
+    const ratingValue = parseFloat(movie.rating);
+    if (
+      !ratingValue ||
+      isNaN(ratingValue) ||
+      !/^\d+(\.\d+)?$/.test(movie.rating)
+    ) {
+      errors.rating = "Rating must be a valid number.";
+    } else if (ratingValue < 0 || ratingValue > 10) {
+      errors.rating = "Rating must be between 0 and 10.";
+    }
+
+    // Release Year: must be int > 1900
+    const yearValue = parseInt(movie.releaseYear);
+    if (
+      !yearValue ||
+      isNaN(yearValue) ||
+      yearValue <= 1900 ||
+      yearValue >= 2200 ||
+      !/^\d+?$/.test(movie.releaseYear)
+    ) {
+      errors.releaseYear =
+        "Year must be a valid number of year greater than 1900.";
+    }
+
+    // Producer: only letters, spaces, hyphens
+    const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s-]+$/;
+    if (!nameRegex.test(movie.producer)) {
+      errors.producer = "Only letters, spaces and hyphens are allowed.";
+    }
+
+    // Cast names: same pattern
+    const invalidActor = movie.cast.find((actor) => !nameRegex.test(actor));
+    if (invalidActor) {
+      errors.cast = `Invalid actor name: "${invalidActor}".`;
+    }
+
+    // If any errors — stop
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    // Clear errors if validation passed
+    setValidationErrors({});
 
     const urlBase = "https://6815fe8232debfe95dbd0fd4.mockapi.io/api/v1/movie";
     const url = id ? `${urlBase}/${id}` : urlBase;
@@ -77,7 +126,11 @@ function MovieForm() {
     fetch(url, {
       method: id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...movie, rating: parseFloat(movie.rating) }),
+      body: JSON.stringify({
+        ...movie,
+        rating: ratingValue,
+        releaseYear: yearValue,
+      }),
     })
       .then((response) => {
         if (!response.ok) throw new Error("Failed to save movie");
@@ -129,23 +182,26 @@ function MovieForm() {
         <TextField
           label="Rating"
           name="rating"
-          type="number"
           fullWidth
           margin="normal"
           value={movie.rating}
           onChange={handleChange}
           required
+          error={!!validationErrors.rating}
+          helperText={validationErrors.rating}
         />
         <TextField
           label="Release Year"
           name="releaseYear"
-          type="number"
           fullWidth
           margin="normal"
           value={movie.releaseYear}
           onChange={handleChange}
           required
+          error={!!validationErrors.releaseYear}
+          helperText={validationErrors.releaseYear}
         />
+
         <TextField
           label="Producer Full Name"
           name="producer"
@@ -154,7 +210,10 @@ function MovieForm() {
           value={movie.producer}
           onChange={handleChange}
           required
+          error={!!validationErrors.producer}
+          helperText={validationErrors.producer}
         />
+
         <TextField
           label="Poster URL"
           name="posterUrl"
@@ -171,7 +230,10 @@ function MovieForm() {
           value={castInput}
           onChange={handleCastChange}
           placeholder="e.g., Tom Hanks, Meryl Streep"
+          error={!!validationErrors.cast}
+          helperText={validationErrors.cast}
         />
+
         <Typography variant="subtitle1" sx={{ mt: 2 }}>
           Genres
         </Typography>
