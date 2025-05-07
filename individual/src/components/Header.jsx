@@ -3,25 +3,23 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MovieIcon from "@mui/icons-material/Movie";
+import { Link } from "react-router";
+import { Button } from "@mui/material";
 
 function Header() {
   return (
     <AppBar position="static" color="secondary" elevation={4}>
       <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="logo"
-          sx={{ mr: 2 }}
-        >
-          <MovieIcon sx={{ color: "#fdd835" }} />
-        </IconButton>
-        <Typography
-          variant="h6"
-          sx={{ flexGrow: 1, color: "#fdd835", fontWeight: "bold" }}
-        >
-          My Movies Library
-        </Typography>
+        <Button color="inherit" component={Link} to="/">
+          <MovieIcon sx={{ marginRight: "10px" }} />
+          Home
+        </Button>
+        <Button color="inherit" component={Link} to="/movies">
+          Browse
+        </Button>
+        <Button color="inherit" component={Link} to="/movies/add">
+          Add Movie
+        </Button>
       </Toolbar>
     </AppBar>
   );

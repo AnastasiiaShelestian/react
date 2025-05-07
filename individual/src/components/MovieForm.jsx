@@ -1,43 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router";
 
 function MovieForm() {
+  const { id } = useParams();
   const [movie, setMovie] = useState({
     title: "",
     description: "",
     rating: "",
     releaseYear: "",
     producer: "",
+    posterUrl: "",
     cast: [],
   });
+
+  const [castInput, setCastInput] = useState(""); // for displaying comma-separated cast
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      fetch(`https://6815fe8232debfe95dbd0fd4.mockapi.io/api/v1/movie/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setMovie(data);
+          setCastInput(data.cast?.join(", ") || "");
+        })
+        .catch((error) => console.error("Error fetching movie:", error));
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMovie((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCastChange = (e) => {
+    const value = e.target.value;
+    setCastInput(value);
+    const castArray = value
+      .split(",")
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0);
+    setMovie((prev) => ({ ...prev, cast: castArray }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("https://6815fe8232debfe95dbd0fd4.mockapi.io/api/v1/movie", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(movie),
+    const urlBase = "https://6815fe8232debfe95dbd0fd4.mockapi.io/api/v1/movie";
+    const url = id ? `${urlBase}/${id}` : urlBase;
+
+    fetch(url, {
+      method: id ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...movie, rating: parseFloat(movie.rating) }),
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to add movie");
-        }
+        if (!response.ok) throw new Error("Failed to save movie");
         return response.json();
       })
       .then((data) => {
-        console.log("Movie added:", data);
+        navigate(`/movies/${data.id}`);
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => console.error("Error:", error));
   };
 
   return (
@@ -54,8 +79,9 @@ function MovieForm() {
       }}
     >
       <Typography variant="h5" gutterBottom>
-        Add New Movie
+        {id ? "Edit Movie" : "Add New Movie"}
       </Typography>
+
       <form onSubmit={handleSubmit}>
         <TextField
           label="Title"
@@ -70,9 +96,9 @@ function MovieForm() {
           label="Description"
           name="description"
           fullWidth
-          margin="normal"
           multiline
           rows={3}
+          margin="normal"
           value={movie.description}
           onChange={handleChange}
         />
@@ -97,13 +123,30 @@ function MovieForm() {
           required
         />
         <TextField
-          label="Producer"
+          label="Producer Full Name"
           name="producer"
           fullWidth
           margin="normal"
           value={movie.producer}
           onChange={handleChange}
           required
+        />
+        <TextField
+          label="Poster URL"
+          name="posterUrl"
+          fullWidth
+          margin="normal"
+          value={movie.posterUrl}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Cast (comma-separated)"
+          name="cast"
+          fullWidth
+          margin="normal"
+          value={castInput}
+          onChange={handleCastChange}
+          placeholder="e.g., Tom Hanks, Meryl Streep"
         />
         <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
           Submit

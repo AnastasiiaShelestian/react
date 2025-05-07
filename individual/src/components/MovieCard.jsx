@@ -11,7 +11,14 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 
-const MovieCard = ({ id, title, description, rating, posterUrl }) => {
+const MovieCard = ({
+  id,
+  title,
+  description,
+  releaseYear,
+  rating,
+  posterUrl,
+}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -55,6 +62,9 @@ const MovieCard = ({ id, title, description, rating, posterUrl }) => {
             {rating.toFixed(1)} / 10
           </Typography>
         </Box>
+        <Typography variant="body2" color="text.secondary">
+          Release year: {releaseYear}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           {description.length > 100
             ? description.slice(0, 100) + "…"
